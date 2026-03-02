@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Design Space</title>
+    <link rel="stylesheet" href="constructor.css">
+</head>
+<body>
+<div id="container">
+    <div id="topContainer">
+        <img class="topImage" src="img/constructor/top.png" alt="base">
+        <img class="topDimensions draggable" id="s" draggable="true" src="img/constructor/sIcon.png" alt="s">
+        <img class="topDimensions draggable" id="t" draggable="true" src="img/constructor/tIcon.png" alt="t">
+        <img class="topDimensions draggable" id="r" draggable="true" src="img/constructor/rIcon.png" alt="r">
+
+        <img class="dimensionsHolder dropholder" id="dimensionsHolder1" src="img/constructor/dimensionHolder.png" alt="1">
+        <img class="dimensionsHolder dropholder" id="dimensionsHolder2" src="img/constructor/dimensionHolder.png" alt="2">
+        <img class="dimensionsHolder dropholder" id="dimensionsHolder3" src="img/constructor/dimensionHolder.png" alt="3">
+        <img class="dimensionsHolder dropholder" id="dimensionsHolder4" src="img/constructor/dimensionHolder.png" alt="4">
+
+        <img class="textEmb" id="embOff" src="img/constructor/embTextOff.png" alt="emb">
+        <img class="textEmb" id="embOn" src="img/constructor/embTextOn.png" alt="emb">
+        <img class="textJuxt" id="juxtOff" src="img/constructor/juxtTextOff.png" alt="juxt">
+        <img class="textJuxt" id="juxtOn" src="img/constructor/juxtTextOn.png" alt="juxt">
+    </div>
+</div>
+<div id="leftContainer">
+    <div id="rOptions">
+        <img class="combinationsBase" src="img/constructor/rIcons/r.png" alt="container">
+
+        <img class="rIcons top" id="hypergraphIconOff" src="img/constructor/rIcons/hypergraphIcon.png" alt="hypergraph">
+        <img class="rIcons middle" id="dictIconOff" src="img/constructor/rIcons/dictIcon.png" alt="dictionary">
+        <img class="rIcons bottom" id="matrixIconOff" src="img/constructor/rIcons/matrixIcon.png" alt="matrix">
+
+        <img class="rIcons top" id="hypergraphIconOn" src="img/constructor/rIcons/hypergraphIconToggled.png" alt="hypergraph">
+<!--        <img class="rIcons middle" id="dictIconOn" src="img/constructor/rIcons/dictIcon.png" alt="juxt">-->
+<!--        <img class="rIcons bottom" id="matrixIconOn" src="img/constructor/rIcons/matrixIcon.png" alt="enc">-->
+
+    </div>
+    <div id="rtOptions">
+        <img class="combinationsBase" src="img/constructor/rtIcons/rt.png" alt="container">
+
+        <img class="rtIcons top" id="storylinesIconOff" src="img/constructor/rtIcons/rtStorylinesIcon.png" alt="storylines">
+        <img class="rtIcons top-middle" id="timelinesIconOff" src="img/constructor/rtIcons/rtTimelinesIcon.png" alt="timelines">
+
+        <img class="rtIcons top" id="storylinesIconOn" src="img/constructor/rtIcons/rtStorylinesIconToggled.png" alt="storylines">
+        <img class="rtIcons top-middle" id="timelinesIconOn" src="img/constructor/rtIcons/rtTimelinesIconToggled.png" alt="timelines">
+    </div>
+</div>
+<div id="rightContainer">
+    <div id="stOptions">
+        <img class="combinationsBase" src="img/constructor/stIcons/st.png" alt="container">
+
+        <img class="stIcons top" id="stEmbOff" src="img/constructor/stIcons/stEmbIcon.png" alt="emb">
+        <img class="stIcons middle" id="stJuxtOff" src="img/constructor/stIcons/stJuxtIcon.png" alt="juxt">
+        <img class="stIcons bottom" id="stEncOff" src="img/constructor/stIcons/stEncIcon.png" alt="enc">
+
+        <img class="stIcons top" id="stEmbOn" src="img/constructor/stIcons/stEmbIconToggled.png" alt="emb">
+        <img class="stIcons middle" id="stJuxtOn" src="img/constructor/stIcons/stJuxtIconToggled.png" alt="juxt">
+        <img class="stIcons bottom" id="stEncOn" src="img/constructor/stIcons/stEncIconToggled.png" alt="enc">
+    </div>
+    <div id="sOptions">
+        <img class="combinationsBase" id="sOn" src="img/constructor/sIcons/s.png" alt="container">
+    </div>
+</div>
+<div id="centerContainer">
+    <div id="imageHolder">
+        <img class="center" id="space" src="img/constructor/vis/space.png" alt="space">
+        <img class="center frames" id="rt-juxt" src="img/constructor/vis/rt-juxt.png" alt="rt-juxt">
+        <img class="center frames" id="rt-emb" src="img/constructor/vis/rt-emb.png" alt="rt-emb">
+    </div>
+</div>
+<script src="constructor.js"></script>
+</body>
+</html>

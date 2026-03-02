@@ -1,0 +1,187 @@
+#container {
+    height: 250px;
+    max-width: 50vw;
+    margin: 50px auto;
+    display: flex;
+    justify-content: center;
+}
+#topContainer {
+    position: absolute;
+}
+#leftContainer {
+    position: absolute;
+    top: 170px;
+    left: 200px;
+}
+#rightContainer {
+    position: absolute;
+    top: 170px;
+    right: 200px;
+}
+#centerContainer {
+    height: 250px;
+    max-width: 50vw;
+    margin: 50px auto;
+    display: flex;
+    justify-content: center;
+}
+#imageHolder {
+    position: absolute;
+}
+#space {
+    display: none;
+    z-index: 1;
+}
+.frames {
+    display: none;
+    position: absolute;
+    top: 0;
+    z-index: 10;
+}
+.center {
+    height: 400px;
+}
+#sOptions {
+    display: none;
+}
+#stOptions {
+    display: none;
+}
+#rOptions {
+    display: none;
+}
+#rtOptions {
+    display: none;
+}
+.rtIcons {
+    width: 147px;
+    position: absolute;
+    left: 0;
+}
+.top-middle {
+    top: 123px;
+    left: 2.5px;
+}
+#storylinesIconOn {
+    display: none;
+}
+#timelinesIconOn {
+    display: none;
+}
+.combinationsBase {
+    width: 150px;
+}
+.stIcons {
+    height: 135px;
+    position: absolute;
+}
+.rIcons {
+    height: 126.5px;
+    position: absolute;
+}
+.top {
+    top: 0.5px;
+    left: 0.7px;
+}
+.middle {
+    top: 175.5px;
+    left: 1.8px;
+}
+.bottom {
+    top: 354px;
+    left: 5.2px;
+}
+#hypergraphIconOn {
+    display: none;
+}
+#resultFromCombination {
+    display: none;
+}
+.topImage {
+    height: 250px;
+}
+.topDimensions {
+    height: 49px;
+    z-index: 5;
+}
+#s {
+    position: absolute;
+    top: 0;
+    left: 121px;
+}
+#t {
+    position: absolute;
+    top: 1px;
+    left: 281px;
+}
+#r {
+    position: absolute;
+    top: 0;
+    left: 434px;
+}
+.dimensionsHolder {
+    height: 78px;
+    z-index: 1;
+}
+#dimensionsHolder2 {
+    position: absolute;
+    bottom: 40px;
+    left: 129px;
+}
+#dimensionsHolder1 {
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+}
+#dimensionsHolder4 {
+    position: absolute;
+    bottom: 35px;
+    left: 581px;
+}
+#dimensionsHolder3 {
+    position: absolute;
+    bottom: 35px;
+    left: 451px;
+}
+.textEmb {
+}
+.textJuxt {
+}
+#embOff {
+    height: 23.5px;
+    position: absolute;
+    bottom: 87px;
+    left: 251px;
+}
+#embOn {
+    height: 25.5px;
+    position: absolute;
+    bottom: 87px;
+    left: 250px;
+}
+#juxtOff {
+    height: 29px;
+    position: absolute;
+    bottom: 28px;
+    left: 245px;
+}
+#juxtOn {
+    height: 31px;
+    position: absolute;
+    bottom: 28px;
+    left: 244px;
+}
+.draggable {
+    cursor: grab;
+    user-select: none;
+}
+.draggable:active {
+    cursor: grabbing;
+}
+.dropholder {
+
+}
+.dropholder.over {
+    outline: 2px dashed #000;
+    outline-offset: 4px;
+}
