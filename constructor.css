@@ -91,7 +91,7 @@
     top: 354px;
     left: 5.2px;
 }
-#hypergraphIconOn {
+#hypergraphIconOn, #dictIconOn, #matrixIconOn {
     display: none;
 }
 #resultFromCombination {

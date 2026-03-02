@@ -5,8 +5,19 @@ const rOptions = document.getElementById('rOptions');
 const rtOptions = document.getElementById('rtOptions');
 const sOptions = document.getElementById('sOptions');
 const space = document.getElementById('space');
-const rtJuxt = document.getElementById('rt-juxt');
-const rtEmb = document.getElementById('rt-emb');
+const rtJuxtStory = document.getElementById('rt-juxt-story');
+const rtJuxtTime = document.getElementById('rt-juxt-time');
+const rtEmbStory = document.getElementById('rt-emb-story');
+const rtEmbTime = document.getElementById('rt-emb-time');
+const imageHolder = document.getElementById('imageHolder');
+const rJuxtGraph = document.getElementById('r-juxt-graph');
+const rJuxtDict = document.getElementById('r-juxt-dict');
+const rJuxtMatrix = document.getElementById('r-juxt-matrix');
+const rEmbGraph = document.getElementById('r-emb-graph');
+const rEmbDict = document.getElementById('r-emb-dict');
+const rEmbMatrix = document.getElementById('r-emb-matrix');
+
+imageHolder.style.display = 'none';
 
 let isEmb = true;
 let isJuxt = false;
@@ -14,6 +25,16 @@ let isJuxt = false;
 // RT
 let isStorylines = false;
 let isTimelines = false;
+
+// R
+let isHypergraph = false;
+let isDict = false;
+let isMatrix = false;
+
+// ST
+let isTembS = false;
+let isTjuxtS = false;
+let isTencS = false;
 
 
 const startPos = {};
@@ -157,18 +178,81 @@ function logStateAndCombination() {
     if (isRT) showRTOptions(); else hideRTOptions();
     if (isS) showSOptions(); else hideSOptions();
 
-
+    // RT-S
     if (isRT && isS) {
         if (isStorylines) {
-            if (isJuxt) showRTStorylinesJuxt();
-            if (isEmb) showRTStorylinesEmb();
+            hideTimelinesJuxt();
+            hideTimelinesEmb();
+            if (isJuxt) showStorylinesJuxt();
+            if (isEmb) showStorylinesEmb();
         }
+        if (isTimelines) {
+            hideStorylinesJuxt();
+            hideStorylinesEmb();
+            if (isJuxt) showTimelinesJuxt();
+            if (isEmb) showTimelinesEmb();
+        }
+        imageHolder.style.display = 'block';
     } else {
-        hideRTStorylinesJuxt();
-        hideRTStorylinesEmb();
+        imageHolder.style.display = 'none';
+        // hideStorylinesJuxt();
+        // hideTimelinesJuxt();
+        // hideTimelinesEmb();
+        // hideStorylinesEmb();
+    }
+    // R-ST
+    if (isR) {
+        imageHolder.style.display = 'block';
+        if (isHypergraph) {
+            hideDictEmb();
+            hideDictJuxt();
+            hideMatrixEmb();
+            hideMatrixJuxt();
+            if (isJuxt) showHypergraphJuxt();
+            if (isEmb) showHypergraphEmb();
+        }
+        if (isDict) {
+            hideMatrixEmb();
+            hideMatrixJuxt();
+            hideHypergraphEmb();
+            hideHypergraphJuxt();
+            if (isJuxt) showDictJuxt();
+            if (isEmb) showDictEmb();
+        }
+        if (isMatrix) {
+            hideDictJuxt();
+            hideDictEmb();
+            hideHypergraphJuxt();
+            hideHypergraphEmb();
+            if (isJuxt) showMatrixJuxt();
+            if (isEmb) showMatrixEmb();
+        }
+        if (isST) {
+            if (isTembS) {
+                showTembS();
+            } else if (isTjuxtS) {
+                showTjuxtS();
+            } else if (isTencS) {
+                if (isJuxt) {
+                    showTencS();
+                }
+                if (isEmb) {
+                    if (isHypergraph) {
+                        showHypergraphEnc();
+                    }
+                    if (isDict) {
+                        showDictEnc();
+                    }
+                    if (isMatrix) {
+                        showMatrixEnc();
+                    }
+                }
+            } else {
+                imageHolder.style.display = 'none';
+            }
+        }
     }
 }
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////// emb / juxt
 
 const embOff = document.getElementById('embOff');
@@ -204,15 +288,6 @@ function switchToJuxt() {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////// ST
-
-function showSTOptions() {
-    stOptions.style.display = 'block';
-}
-
-function hideSTOptions() {
-    stOptions.style.display = 'none';
-}
-
 const stEmbOff= document.getElementById('stEmbOff');
 const stJuxtOff= document.getElementById('stJuxtOff');
 const stEncOff= document.getElementById('stEncOff');
@@ -228,19 +303,94 @@ stEmbOff.addEventListener('click', () => {
     stEmbOn.style.display = 'block';
     stJuxtOn.style.display = 'none';
     stEncOn.style.display = 'none';
+    isTembS = true;
+    isTjuxtS = false;
+    isTencS = false;
+    logStateAndCombination();
 });
 stJuxtOff.addEventListener('click', () => {
     stEmbOn.style.display = 'none';
     stJuxtOn.style.display = 'block';
     stEncOn.style.display = 'none';
+    isTembS = false;
+    isTjuxtS = true;
+    isTencS = false;
+    logStateAndCombination();
 });
 stEncOff.addEventListener('click', () => {
     stEmbOn.style.display = 'none';
     stJuxtOn.style.display = 'none';
     stEncOn.style.display = 'block';
+    isTembS = false;
+    isTjuxtS = false;
+    isTencS = true;
+    logStateAndCombination();
 });
-
+// ST options
+function showSTOptions() {
+    stOptions.style.display = 'block';
+}
+function hideSTOptions() {
+    stOptions.style.display = 'none';
+}
+// ST display
+//emb
+function showTembS() {
+    console.log('showTembS')
+}
+function hideTembS() {
+    console.log('hideTembS')
+}
+//juxt
+function showTjuxtS() {
+    console.log('showTjuxtS')
+}
+function hideTjuxtS() {
+    console.log('hideTjuxtS')
+}
+//enc
+function showTencS() {
+    console.log('showTencS')
+}
+function hideTencS() {
+    console.log('hideTencS')
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////// R
+const hypergraphOn = document.getElementById('hypergraphIconOn');
+const hypergraphOff = document.getElementById('hypergraphIconOff');
+const dictOn = document.getElementById('dictIconOn');
+const dictOff = document.getElementById('dictIconOff');
+const matrixOn = document.getElementById('matrixIconOn');
+const matrixOff = document.getElementById('matrixIconOff');
+
+hypergraphOff.addEventListener('click', () => {
+    hypergraphOn.style.display = 'block';
+    dictOn.style.display = 'none';
+    matrixOn.style.display = 'none';
+    isHypergraph = true;
+    isDict = false;
+    isMatrix = false;
+    logStateAndCombination();
+});
+dictOff.addEventListener('click', () => {
+    dictOn.style.display = 'block';
+    matrixOn.style.display = 'none';
+    hypergraphOn.style.display = 'none';
+    isHypergraph = false;
+    isDict = true;
+    isMatrix = false;
+    logStateAndCombination();
+});
+matrixOff.addEventListener('click', () => {
+    matrixOn.style.display = 'block';
+    dictOn.style.display = 'none';
+    hypergraphOn.style.display = 'none';
+    isHypergraph = false;
+    isDict = false;
+    isMatrix = true;
+    logStateAndCombination();
+});
+// R options
 function showROptions() {
     rOptions.style.display = 'block';
     rtOptions.style.display = 'none';
@@ -249,19 +399,71 @@ function showROptions() {
 function hideROptions() {
     rOptions.style.display = 'none';
 }
-
-const hypergraphOn = document.getElementById('hypergraphIconOn');
-const hypergraphOff = document.getElementById('hypergraphIconOff');
-
-hypergraphOn.style.display = 'none';
-
-hypergraphOff.addEventListener('click', () => {
-    hypergraphOn.style.display = 'block';
-})
-hypergraphOn.addEventListener('click', () => {
-    hypergraphOn.style.display = 'none';
-})
-
+// R display
+//Hypergraph
+function showHypergraphJuxt() {
+    rJuxtGraph.style.display = 'block';
+    hideHypergraphEmb();
+}
+function hideHypergraphJuxt() {
+    rJuxtGraph.style.display = 'none';
+}
+function showHypergraphEmb() {
+    rEmbGraph.style.display = 'block';
+    hideHypergraphJuxt();
+}
+function hideHypergraphEmb() {
+    rEmbGraph.style.display = 'none';
+}
+//Dict
+function showDictJuxt() {
+    rJuxtDict.style.display = 'block';
+    hideDictEmb();
+}
+function hideDictJuxt() {
+    rJuxtDict.style.display = 'none';
+}
+function showDictEmb() {
+    rEmbDict.style.display = 'block';
+    hideDictJuxt();
+}
+function hideDictEmb() {
+    rEmbDict.style.display = 'none';
+}
+//Matrix
+function showMatrixJuxt() {
+    rJuxtMatrix.style.display = 'block';
+    hideMatrixEmb();
+}
+function hideMatrixJuxt() {
+    rJuxtMatrix.style.display = 'none';
+}
+function showMatrixEmb() {
+    rEmbMatrix.style.display = 'block';
+    hideMatrixJuxt();
+}
+function hideMatrixEmb() {
+    rEmbMatrix.style.display = 'none';
+}
+//R emb TencS
+function showHypergraphEnc() {
+    console.log('showHypergraphEnc')
+}
+function hideHypergraphEnc() {
+    console.log('hideHypergraphEnc')
+}
+function showDictEnc() {
+    console.log('showDictEnc')
+}
+function hideDictEnc() {
+    console.log('hideDictEnc')
+}
+function showMatrixEnc() {
+    console.log('showMatrixEnc')
+}
+function hideMatrixEnc() {
+    console.log('hideMatrixEnc')
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////// RT
 const storylinesIconOff = document.getElementById('storylinesIconOff');
 const timelinesIconOff = document.getElementById('timelinesIconOff');
@@ -269,12 +471,13 @@ const storylinesIconOn = document.getElementById('storylinesIconOn');
 const timelinesIconOn = document.getElementById('timelinesIconOn');
 
 storylinesIconOff.addEventListener('click', () => {
-    switchRTStorylinesOptions();
+    switchStorylinesOptions();
 })
 timelinesIconOff.addEventListener('click', () => {
-    switchRTTimelinesOptions();
+    switchTimelinesOptions();
 })
 
+//RT options
 function showRTOptions() {
     rtOptions.style.display = 'block';
     rOptions.style.display = 'none';
@@ -282,47 +485,65 @@ function showRTOptions() {
 function hideRTOptions() {
     rtOptions.style.display = 'none';
 }
-
-function switchRTStorylinesOptions() {
+function switchStorylinesOptions() {
     storylinesIconOn.style.display = 'block';
     timelinesIconOn.style.display = 'none';
     isStorylines = true;
     isTimelines = false;
     logStateAndCombination();
 }
-function switchRTTimelinesOptions() {
+function switchTimelinesOptions() {
     storylinesIconOn.style.display = 'none';
     timelinesIconOn.style.display = 'block';
     isTimelines = true;
     isStorylines = false;
     logStateAndCombination();
 }
-function showRTStorylinesJuxt() {
+// RT display
+//Storylines juxt
+function showStorylinesJuxt() {
     showSpace();
-    rtJuxt.style.display = 'block';
-    rtEmb.style.display = 'none';
+    rtJuxtStory.style.display = 'block';
+    rtEmbStory.style.display = 'none';
 }
-function hideRTStorylinesJuxt() {
-    rtJuxt.style.display = 'none';
+function hideStorylinesJuxt() {
+    rtJuxtStory.style.display = 'none';
 }
-function hideRTStorylinesEmb() {
-    rtEmb.style.display = 'none';
-}
-function showRTStorylinesEmb() {
+function showTimelinesJuxt() {
     showSpace();
-    rtEmb.style.display = 'block';
-    rtJuxt.style.display = 'none';
+    rtJuxtTime.style.display = 'block';
+    rtEmbTime.style.display = 'none';
 }
-function showSpace() {
-    space.style.display = 'block';
+function hideTimelinesJuxt() {
+    rtJuxtTime.style.display = 'none';
+}
+//Storylines emb
+function showStorylinesEmb() {
+    showSpace();
+    rtEmbStory.style.display = 'block';
+    rtJuxtStory.style.display = 'none';
+}
+function hideStorylinesEmb() {
+    rtEmbStory.style.display = 'none';
+}
+function showTimelinesEmb() {
+    showSpace();
+    rtEmbTime.style.display = 'block';
+    rtJuxtTime.style.display = 'none';
+}
+function hideTimelinesEmb() {
+    rtEmbTime.style.display = 'none';
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////// S
 function showSOptions() {
     sOptions.style.display = 'block';
     space.style.display = 'block';
 }
-
 function hideSOptions() {
     sOptions.style.display = 'none';
     space.style.display = 'none';
+}
+// S display
+function showSpace() {
+    space.style.display = 'block';
 }
