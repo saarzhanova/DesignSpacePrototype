@@ -32,6 +32,15 @@
     display: none;
     z-index: 1;
 }
+#t-emb-s {
+    z-index: 3;
+}
+#r-emb-graph, #r-emb-dict, #r-emb-matrix {
+    z-index: 2;
+}
+#r-juxt-graph, #r-juxt-dict, #r-juxt-matrix {
+    z-index: 4;
+}
 .frames {
     display: none;
     position: absolute;

@@ -16,6 +16,14 @@ const rJuxtMatrix = document.getElementById('r-juxt-matrix');
 const rEmbGraph = document.getElementById('r-emb-graph');
 const rEmbDict = document.getElementById('r-emb-dict');
 const rEmbMatrix = document.getElementById('r-emb-matrix');
+const rJuxtGraphEnc = document.getElementById('r-juxt-graph-enc');
+const rJuxtDictEnc = document.getElementById('r-juxt-dict-enc');
+const rJuxtMatrixEnc = document.getElementById('r-juxt-matrix-enc');
+const rEmbGraphEnc = document.getElementById('r-emb-graph-enc');
+const rEmbDictEnc = document.getElementById('r-emb-dict-enc');
+const rEmbMatrixEnc = document.getElementById('r-emb-matrix-enc');
+const tEmbS = document.getElementById('t-emb-s');
+const tJuxtS = document.getElementById('t-juxt-s');
 
 imageHolder.style.display = 'none';
 
@@ -170,6 +178,7 @@ function logStateAndCombination() {
 
     let isST = (holderState['dimensionsHolder3'] === 's' && holderState['dimensionsHolder4'] === 't') || (holderState['dimensionsHolder3'] === 't' && holderState['dimensionsHolder4'] === 's');
     let isR = (holderState['dimensionsHolder1'] === 'r' && holderState['dimensionsHolder2'] === null) || (holderState['dimensionsHolder2'] === 'r' && holderState['dimensionsHolder1'] === null);
+    let isT = (holderState['dimensionsHolder1'] === 't' && holderState['dimensionsHolder2'] === null) || (holderState['dimensionsHolder2'] === 't' && holderState['dimensionsHolder1'] === null);
     let isRT = (holderState['dimensionsHolder1'] === 'r' && holderState['dimensionsHolder2'] === 't') || (holderState['dimensionsHolder1'] === 't' && holderState['dimensionsHolder2'] === 'r');
     let isS = (holderState['dimensionsHolder3'] === 's' && holderState['dimensionsHolder4'] === null) || (holderState['dimensionsHolder4'] === 's' && holderState['dimensionsHolder3'] === null);
 
@@ -195,13 +204,16 @@ function logStateAndCombination() {
         imageHolder.style.display = 'block';
     } else {
         imageHolder.style.display = 'none';
-        // hideStorylinesJuxt();
-        // hideTimelinesJuxt();
-        // hideTimelinesEmb();
-        // hideStorylinesEmb();
+        hideStorylinesJuxt();
+        hideStorylinesEmb();
+        hideTimelinesJuxt();
+        hideTimelinesEmb();
     }
     // R-ST
+
     if (isR) {
+        hideTembS();
+        hideTjuxtS();
         imageHolder.style.display = 'block';
         if (isHypergraph) {
             hideDictEmb();
@@ -210,16 +222,14 @@ function logStateAndCombination() {
             hideMatrixJuxt();
             if (isJuxt) showHypergraphJuxt();
             if (isEmb) showHypergraphEmb();
-        }
-        if (isDict) {
+        } else if (isDict) {
             hideMatrixEmb();
             hideMatrixJuxt();
             hideHypergraphEmb();
             hideHypergraphJuxt();
             if (isJuxt) showDictJuxt();
             if (isEmb) showDictEmb();
-        }
-        if (isMatrix) {
+        } else if (isMatrix) {
             hideDictJuxt();
             hideDictEmb();
             hideHypergraphJuxt();
@@ -228,28 +238,60 @@ function logStateAndCombination() {
             if (isEmb) showMatrixEmb();
         }
         if (isST) {
-            if (isTembS) {
+            if (isTembS && (isHypergraph || isDict || isMatrix)) {
                 showTembS();
-            } else if (isTjuxtS) {
+                imageHolder.style.display = 'block';
+            } else if (isTjuxtS && (isHypergraph || isDict || isMatrix)) {
                 showTjuxtS();
-            } else if (isTencS) {
-                if (isJuxt) {
-                    showTencS();
+                imageHolder.style.display = 'block';
+            } else if (isTencS && (isHypergraph || isDict || isMatrix)) {
+                if (isHypergraph) {
+                    if (isJuxt) showHypergraphJuxtEnc();
+                    if (isEmb) showHypergraphEmbEnc()
+                } else if (isDict) {
+                    if (isJuxt) showDictJuxtEnc();
+                    if (isEmb) showDictEmbEnc();
+                } else if (isMatrix) {
+                    if (isJuxt) showMatrixJuxtEnc();
+                    if (isEmb) showMatrixEmbEnc();
+                } else {
+                    showSpace();
+                    hideTjuxtS();
+                    hideTembS();
                 }
-                if (isEmb) {
-                    if (isHypergraph) {
-                        showHypergraphEnc();
-                    }
-                    if (isDict) {
-                        showDictEnc();
-                    }
-                    if (isMatrix) {
-                        showMatrixEnc();
-                    }
-                }
+                imageHolder.style.display = 'block';
             } else {
                 imageHolder.style.display = 'none';
             }
+        }
+    } else {
+        hideDictJuxt();
+        hideDictEmb();
+        hideMatrixJuxt();
+        hideMatrixEmb();
+        hideHypergraphJuxt();
+        hideHypergraphEmb();
+        hideTembS();
+        hideTjuxtS();
+    }
+
+    // is T-S
+    if (isT && isS) {
+        showSTOptions();
+        hideSOptions();
+        if (isTembS) {
+            showTembS();
+            imageHolder.style.display = 'block';
+        } else if (isTjuxtS) {
+            showTjuxtS();
+            imageHolder.style.display = 'block';
+        } else if (isTencS) {
+                showSpace();
+                hideTjuxtS();
+                hideTembS();
+            imageHolder.style.display = 'block';
+        } else {
+            imageHolder.style.display = 'none';
         }
     }
 }
@@ -336,24 +378,176 @@ function hideSTOptions() {
 // ST display
 //emb
 function showTembS() {
-    console.log('showTembS')
+    // hide other T
+    hideTjuxtS();
+    hideAllEnc();
+
+    showSpace();
+    tEmbS.style.display = 'block';
 }
 function hideTembS() {
-    console.log('hideTembS')
+    tEmbS.style.display = 'none';
 }
 //juxt
 function showTjuxtS() {
-    console.log('showTjuxtS')
+    // hide other T
+    hideTembS();
+    hideAllEnc();
+
+    showSpace();
+    tJuxtS.style.display = 'block';
 }
 function hideTjuxtS() {
-    console.log('hideTjuxtS')
+    showSpace();
+    tJuxtS.style.display = 'none';
 }
-//enc
-function showTencS() {
-    console.log('showTencS')
+//enc juxt
+function showHypergraphJuxtEnc() {
+    //hide time
+    hideTjuxtS();
+    hideTembS();
+
+    // hide R
+    hideHypergraphJuxt();
+
+    // hide other juxt
+    hideMatrixJuxtEnc();
+    hideDictJuxtEnc();
+
+    // hide emb
+    hideHypergraphEmbEnc();
+    hideDictEmbEnc();
+    hideMatrixEmbEnc();
+
+    showSpace();
+    rJuxtGraphEnc.style.display = 'block';
 }
-function hideTencS() {
-    console.log('hideTencS')
+function hideHypergraphJuxtEnc() {
+    rJuxtGraphEnc.style.display = 'none';
+}
+function showDictJuxtEnc() {
+    //hide time
+    hideTjuxtS();
+    hideTembS();
+
+    // hide R
+    hideDictJuxt();
+
+    // hide other juxt
+    hideHypergraphJuxtEnc();
+    hideMatrixJuxtEnc();
+
+    // hide emb
+    hideHypergraphEmbEnc();
+    hideDictEmbEnc();
+    hideMatrixEmbEnc();
+
+    showSpace();
+    rJuxtDictEnc.style.display = 'block';
+}
+function hideDictJuxtEnc() {
+    rJuxtDictEnc.style.display = 'none';
+}
+function showMatrixJuxtEnc() {
+    //hide time
+    hideTjuxtS();
+    hideTembS();
+
+    // hide R
+    hideMatrixJuxt();
+
+    // hide other juxt
+    hideHypergraphJuxtEnc();
+    hideDictJuxtEnc();
+
+    // hide emb
+    hideHypergraphEmbEnc();
+    hideDictEmbEnc();
+    hideMatrixEmbEnc();
+
+    showSpace();
+    rJuxtMatrixEnc.style.display = 'block';
+}
+function hideMatrixJuxtEnc() {
+    rJuxtMatrixEnc.style.display = 'none';
+}
+// enc emb
+function showHypergraphEmbEnc() {
+    // hide time
+    hideTjuxtS();
+    hideTembS();
+
+    // hide R
+    hideHypergraphJuxt();
+
+    // hide other emb
+    hideDictEmbEnc();
+    hideMatrixEmbEnc();
+
+    // hide juxt
+    hideHypergraphJuxtEnc();
+    hideDictJuxtEnc();
+    hideMatrixJuxtEnc();
+
+    showSpace();
+    rEmbGraphEnc.style.display = 'block';
+}
+function hideHypergraphEmbEnc() {
+    rEmbGraphEnc.style.display = 'none';
+}
+function showDictEmbEnc() {
+    // hide time
+    hideTjuxtS();
+    hideTembS();
+
+    // hide R
+    hideDictJuxt();
+
+    //hide other emb
+    hideHypergraphEmbEnc();
+    hideMatrixEmbEnc();
+
+    // hide juxt
+    hideHypergraphJuxtEnc();
+    hideDictJuxtEnc();
+    hideMatrixJuxtEnc();
+
+    showSpace();
+    rEmbDictEnc.style.display = 'block';
+}
+function hideDictEmbEnc() {
+    rEmbDictEnc.style.display = 'none';
+}
+function showMatrixEmbEnc() {
+    // hide time
+    hideTjuxtS();
+    hideTembS();
+
+    // hide R
+    hideMatrixJuxt();
+
+    //hide other emb
+    hideDictEmbEnc();
+    hideHypergraphEmbEnc();
+
+    // hide juxt
+    hideHypergraphJuxtEnc();
+    hideDictJuxtEnc();
+    hideMatrixJuxtEnc();
+
+    showSpace();
+    rEmbMatrixEnc.style.display = 'block';
+}
+function hideMatrixEmbEnc() {
+    rEmbMatrixEnc.style.display = 'none';
+}
+function hideAllEnc() {
+    hideHypergraphEmbEnc();
+    hideHypergraphJuxtEnc();
+    hideMatrixJuxtEnc();
+    hideMatrixEmbEnc();
+    hideDictEmbEnc();
+    hideDictJuxtEnc();
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////// R
 const hypergraphOn = document.getElementById('hypergraphIconOn');
@@ -402,6 +596,7 @@ function hideROptions() {
 // R display
 //Hypergraph
 function showHypergraphJuxt() {
+    showSpace();
     rJuxtGraph.style.display = 'block';
     hideHypergraphEmb();
 }
@@ -409,6 +604,7 @@ function hideHypergraphJuxt() {
     rJuxtGraph.style.display = 'none';
 }
 function showHypergraphEmb() {
+    showSpace();
     rEmbGraph.style.display = 'block';
     hideHypergraphJuxt();
 }
@@ -417,6 +613,7 @@ function hideHypergraphEmb() {
 }
 //Dict
 function showDictJuxt() {
+    showSpace();
     rJuxtDict.style.display = 'block';
     hideDictEmb();
 }
@@ -424,6 +621,7 @@ function hideDictJuxt() {
     rJuxtDict.style.display = 'none';
 }
 function showDictEmb() {
+    showSpace();
     rEmbDict.style.display = 'block';
     hideDictJuxt();
 }
@@ -432,6 +630,7 @@ function hideDictEmb() {
 }
 //Matrix
 function showMatrixJuxt() {
+    showSpace();
     rJuxtMatrix.style.display = 'block';
     hideMatrixEmb();
 }
@@ -439,6 +638,7 @@ function hideMatrixJuxt() {
     rJuxtMatrix.style.display = 'none';
 }
 function showMatrixEmb() {
+    showSpace();
     rEmbMatrix.style.display = 'block';
     hideMatrixJuxt();
 }
