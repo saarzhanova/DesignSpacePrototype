@@ -177,6 +177,7 @@ function logStateAndCombination() {
     const filled = Object.entries(holderState).filter(([_, v]) => v !== null);
 
     let isST = (holderState['dimensionsHolder3'] === 's' && holderState['dimensionsHolder4'] === 't') || (holderState['dimensionsHolder3'] === 't' && holderState['dimensionsHolder4'] === 's');
+    let isSR = (holderState['dimensionsHolder3'] === 's' && holderState['dimensionsHolder4'] === 'r') || (holderState['dimensionsHolder3'] === 'r' && holderState['dimensionsHolder4'] === 's');
     let isR = (holderState['dimensionsHolder1'] === 'r' && holderState['dimensionsHolder2'] === null) || (holderState['dimensionsHolder2'] === 'r' && holderState['dimensionsHolder1'] === null);
     let isT = (holderState['dimensionsHolder1'] === 't' && holderState['dimensionsHolder2'] === null) || (holderState['dimensionsHolder2'] === 't' && holderState['dimensionsHolder1'] === null);
     let isRT = (holderState['dimensionsHolder1'] === 'r' && holderState['dimensionsHolder2'] === 't') || (holderState['dimensionsHolder1'] === 't' && holderState['dimensionsHolder2'] === 'r');
@@ -210,7 +211,6 @@ function logStateAndCombination() {
         hideTimelinesEmb();
     }
     // R-ST
-
     if (isR) {
         hideTembS();
         hideTjuxtS();
@@ -273,6 +273,7 @@ function logStateAndCombination() {
         hideHypergraphEmb();
         hideTembS();
         hideTjuxtS();
+        hideAllEnc();
     }
 
     // is T-S
@@ -294,6 +295,48 @@ function logStateAndCombination() {
             imageHolder.style.display = 'none';
         }
     }
+
+    if (isT && isSR) {
+        imageHolder.style.display = 'block';
+        showROptions();
+        if (isHypergraph) {
+            hideDictEmb();
+            hideMatrixEmb();
+
+            if (isJuxt) {
+                showHypergraphEmb();
+                showTjuxtS();
+            }
+            if (isEmb) {
+                showHypergraphEmb();
+                showTembS();
+            }
+        } else if (isDict) {
+            hideMatrixEmb();
+            hideHypergraphEmb();
+
+            if (isJuxt) {
+                showDictEmb();
+                showTjuxtS();
+            }
+            if (isEmb) {
+                showDictEmb();
+                showTembS();
+            }
+        } else if (isMatrix) {
+            hideDictEmb();
+            hideHypergraphEmb();
+            if (isJuxt) {
+                showMatrixEmb();
+                showTjuxtS();
+            }
+            if (isEmb) {
+                showMatrixEmb();
+                showTembS();
+            }
+        }
+    }
+
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////// emb / juxt
 
