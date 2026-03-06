@@ -50,6 +50,9 @@
 .center {
     height: 400px;
 }
+#noSpace {
+    display: none;
+}
 #sOptions {
     display: none;
 }

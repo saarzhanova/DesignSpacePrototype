@@ -5,6 +5,7 @@ const rOptions = document.getElementById('rOptions');
 const rtOptions = document.getElementById('rtOptions');
 const sOptions = document.getElementById('sOptions');
 const space = document.getElementById('space');
+const noSpace = document.getElementById('noSpace');
 const rtJuxtStory = document.getElementById('rt-juxt-story');
 const rtJuxtTime = document.getElementById('rt-juxt-time');
 const rtEmbStory = document.getElementById('rt-emb-story');
@@ -24,8 +25,11 @@ const rEmbDictEnc = document.getElementById('r-emb-dict-enc');
 const rEmbMatrixEnc = document.getElementById('r-emb-matrix-enc');
 const tEmbS = document.getElementById('t-emb-s');
 const tJuxtS = document.getElementById('t-juxt-s');
+const stEmbGraph = document.getElementById('st-emb-graph');
+const stEmbDict = document.getElementById('st-emb-dict');
+const stEmbMatrix = document.getElementById('st-emb-matrix');
 
-imageHolder.style.display = 'none';
+imageHolder.style.display = 'none'
 
 let isEmb = true;
 let isJuxt = false;
@@ -176,92 +180,107 @@ function logStateAndCombination() {
     const emptyHolders = Object.keys(holderState).filter(h => holderState[h] === null);
     const filled = Object.entries(holderState).filter(([_, v]) => v !== null);
 
-    let isST = (holderState['dimensionsHolder3'] === 's' && holderState['dimensionsHolder4'] === 't') || (holderState['dimensionsHolder3'] === 't' && holderState['dimensionsHolder4'] === 's');
-    let isSR = (holderState['dimensionsHolder3'] === 's' && holderState['dimensionsHolder4'] === 'r') || (holderState['dimensionsHolder3'] === 'r' && holderState['dimensionsHolder4'] === 's');
-    let isR = (holderState['dimensionsHolder1'] === 'r' && holderState['dimensionsHolder2'] === null) || (holderState['dimensionsHolder2'] === 'r' && holderState['dimensionsHolder1'] === null);
-    let isT = (holderState['dimensionsHolder1'] === 't' && holderState['dimensionsHolder2'] === null) || (holderState['dimensionsHolder2'] === 't' && holderState['dimensionsHolder1'] === null);
-    let isRT = (holderState['dimensionsHolder1'] === 'r' && holderState['dimensionsHolder2'] === 't') || (holderState['dimensionsHolder1'] === 't' && holderState['dimensionsHolder2'] === 'r');
-    let isS = (holderState['dimensionsHolder3'] === 's' && holderState['dimensionsHolder4'] === null) || (holderState['dimensionsHolder4'] === 's' && holderState['dimensionsHolder3'] === null);
+    let isST_right = (holderState['dimensionsHolder3'] === 's' && holderState['dimensionsHolder4'] === 't') || (holderState['dimensionsHolder3'] === 't' && holderState['dimensionsHolder4'] === 's');
+    let isST_left = (holderState['dimensionsHolder1'] === 's' && holderState['dimensionsHolder2'] === 't') || (holderState['dimensionsHolder1'] === 't' && holderState['dimensionsHolder2'] === 's');
+    let isST = (isST_right || isST_left);
+    let isSR_right = (holderState['dimensionsHolder3'] === 's' && holderState['dimensionsHolder4'] === 'r') || (holderState['dimensionsHolder3'] === 'r' && holderState['dimensionsHolder4'] === 's');
+    let isT_only = (holderState['dimensionsHolder1'] === 't' && holderState['dimensionsHolder2'] === null) || (holderState['dimensionsHolder2'] === 't' && holderState['dimensionsHolder1'] === null);
+    let isRT_left = (holderState['dimensionsHolder1'] === 'r' && holderState['dimensionsHolder2'] === 't') || (holderState['dimensionsHolder1'] === 't' && holderState['dimensionsHolder2'] === 'r');
+    let isS_only = (holderState['dimensionsHolder3'] === 's' && holderState['dimensionsHolder4'] === null) || (holderState['dimensionsHolder4'] === 's' && holderState['dimensionsHolder3'] === null);
+    let isS_left = (holderState['dimensionsHolder1'] === 's' || holderState['dimensionsHolder2'] === 's');
+    let isS = Object.values(holderState).includes('s');
+    let isT = Object.values(holderState).includes('t');
+    let isR = Object.values(holderState).includes('r') && !isRT_left;
+    let isR_left = ((holderState['dimensionsHolder1'] === 'r' && holderState['dimensionsHolder2'] === null) || (holderState['dimensionsHolder2'] === 'r' && holderState['dimensionsHolder1'] === null));
+    let isR_right = (holderState['dimensionsHolder3'] === 'r' || holderState['dimensionsHolder4'] === 'r');
 
-    if (isST) showSTOptions(); else hideSTOptions();
-    if (isR) showROptions(); else hideROptions();
-    if (isRT) showRTOptions(); else hideRTOptions();
-    if (isS) showSOptions(); else hideSOptions();
+    if (isST_right) pickSTOptions(); else hideSTOptions();
+    if (isRT_left) pickRTOptions(); else hideRTOptions();
+    if (isR) pickROptions(); else hideROptions();
+    if (isS && !isST_right) pickSOptions(); else hideSOptions();
+    if (isS_left) console.log('S on the left')
+    if (isST_left) hideSpace();
 
     // RT-S
-    if (isRT && isS) {
+    if (isRT_left && isS_only) {
         if (isStorylines) {
             hideTimelinesJuxt();
             hideTimelinesEmb();
-            if (isJuxt) showStorylinesJuxt();
-            if (isEmb) showStorylinesEmb();
+            if (isJuxt) pickStorylinesJuxt();
+            if (isEmb) pickStorylinesEmb();
         }
         if (isTimelines) {
             hideStorylinesJuxt();
             hideStorylinesEmb();
-            if (isJuxt) showTimelinesJuxt();
-            if (isEmb) showTimelinesEmb();
+            if (isJuxt) pickTimelinesJuxt();
+            if (isEmb) pickTimelinesEmb();
         }
-        imageHolder.style.display = 'block';
+        showVisualisation();
     } else {
-        imageHolder.style.display = 'none';
+        hideVisualisation();
         hideStorylinesJuxt();
         hideStorylinesEmb();
         hideTimelinesJuxt();
         hideTimelinesEmb();
     }
     // R-ST
-    if (isR) {
+    if (isR_left) {
+        console.log('R left')
         hideTembS();
         hideTjuxtS();
-        imageHolder.style.display = 'block';
         if (isHypergraph) {
+            console.log('pick graph')
             hideDictEmb();
             hideDictJuxt();
             hideMatrixEmb();
             hideMatrixJuxt();
-            if (isJuxt) showHypergraphJuxt();
-            if (isEmb) showHypergraphEmb();
+            if (isJuxt) pickHypergraphJuxt();
+            if (isEmb) pickHypergraphEmb();
         } else if (isDict) {
             hideMatrixEmb();
             hideMatrixJuxt();
             hideHypergraphEmb();
             hideHypergraphJuxt();
-            if (isJuxt) showDictJuxt();
-            if (isEmb) showDictEmb();
+            if (isJuxt) pickDictJuxt();
+            if (isEmb) pickDictEmb();
         } else if (isMatrix) {
             hideDictJuxt();
             hideDictEmb();
             hideHypergraphJuxt();
             hideHypergraphEmb();
-            if (isJuxt) showMatrixJuxt();
-            if (isEmb) showMatrixEmb();
+            if (isJuxt) pickMatrixJuxt();
+            if (isEmb) pickMatrixEmb();
         }
-        if (isST) {
+        if (isS_only) {
+            showVisualisation();
+        }
+        if (isST_right) {
+            console.log('ST right')
             if (isTembS && (isHypergraph || isDict || isMatrix)) {
-                showTembS();
-                imageHolder.style.display = 'block';
+                console.log('pick embedding')
+                pickTembS();
+                showVisualisation();
             } else if (isTjuxtS && (isHypergraph || isDict || isMatrix)) {
-                showTjuxtS();
-                imageHolder.style.display = 'block';
+                pickTjuxtS();
+                showVisualisation();
             } else if (isTencS && (isHypergraph || isDict || isMatrix)) {
                 if (isHypergraph) {
-                    if (isJuxt) showHypergraphJuxtEnc();
-                    if (isEmb) showHypergraphEmbEnc()
+                    if (isJuxt) pickHypergraphJuxtEnc();
+                    if (isEmb) pickHypergraphEmbEnc()
                 } else if (isDict) {
-                    if (isJuxt) showDictJuxtEnc();
-                    if (isEmb) showDictEmbEnc();
+                    if (isJuxt) pickDictJuxtEnc();
+                    if (isEmb) pickDictEmbEnc();
                 } else if (isMatrix) {
-                    if (isJuxt) showMatrixJuxtEnc();
-                    if (isEmb) showMatrixEmbEnc();
+                    if (isJuxt) pickMatrixJuxtEnc();
+                    if (isEmb) pickMatrixEmbEnc();
                 } else {
-                    showSpace();
+                    pickSpace();
                     hideTjuxtS();
                     hideTembS();
                 }
-                imageHolder.style.display = 'block';
+                showVisualisation();
             } else {
-                imageHolder.style.display = 'none';
+                hideVisualisation();
             }
         }
     } else {
@@ -277,66 +296,161 @@ function logStateAndCombination() {
     }
 
     // is T-S
-    if (isT && isS) {
-        showSTOptions();
+    if (isT_only && isS_only) {
+        pickSTOptions();
         hideSOptions();
         if (isTembS) {
-            showTembS();
-            imageHolder.style.display = 'block';
+            pickTembS();
+            showVisualisation();
         } else if (isTjuxtS) {
-            showTjuxtS();
-            imageHolder.style.display = 'block';
+            pickTjuxtS();
+            showVisualisation();
         } else if (isTencS) {
-                showSpace();
+                pickSpace();
                 hideTjuxtS();
                 hideTembS();
-            imageHolder.style.display = 'block';
+            showVisualisation();
         } else {
-            imageHolder.style.display = 'none';
+            hideVisualisation();
         }
     }
 
-    if (isT && isSR) {
-        imageHolder.style.display = 'block';
-        showROptions();
+    if (isT_only && isSR_right) {
+        showVisualisation();
+        pickROptions();
         if (isHypergraph) {
             hideDictEmb();
             hideMatrixEmb();
 
             if (isJuxt) {
-                showHypergraphEmb();
-                showTjuxtS();
+                pickHypergraphEmb();
+                pickTjuxtS();
             }
             if (isEmb) {
-                showHypergraphEmb();
-                showTembS();
+                pickHypergraphEmb();
+                pickTembS();
             }
         } else if (isDict) {
             hideMatrixEmb();
             hideHypergraphEmb();
 
             if (isJuxt) {
-                showDictEmb();
-                showTjuxtS();
+                pickDictEmb();
+                pickTjuxtS();
             }
             if (isEmb) {
-                showDictEmb();
-                showTembS();
+                pickDictEmb();
+                pickTembS();
             }
         } else if (isMatrix) {
             hideDictEmb();
             hideHypergraphEmb();
             if (isJuxt) {
-                showMatrixEmb();
-                showTjuxtS();
+                pickMatrixEmb();
+                pickTjuxtS();
             }
             if (isEmb) {
-                showMatrixEmb();
-                showTembS();
+                pickMatrixEmb();
+                pickTembS();
             }
         }
     }
 
+    if (isST_left && isR_right) {
+        pickROptions();
+        if (isEmb) {
+            if (isHypergraph) {
+                hideSTEmbDict();
+                hideSTEmbMatrix();
+                // if (isJuxt) pickHypergraphJuxt();
+                if (isEmb) pickSTEmbHypergraph();
+                showVisualisation();
+            } else if (isDict) {
+                hideSTEmbMatrix();
+                hideSTEmbHypergraph();
+                // if (isJuxt) pickDictJuxt();
+                if (isEmb) pickSTEmbDict();
+                showVisualisation();
+            } else if (isMatrix) {
+                hideSTEmbDict();
+                hideSTEmbHypergraph();
+                // if (isJuxt) pickMatrixJuxt();
+                if (isEmb) pickSTEmbMatrix();
+                showVisualisation();
+            } else {
+                hideVisualisation();
+            }
+        } else if (isJuxt) {
+            hideSTEmbDict();
+            hideSTEmbMatrix();
+            hideSTEmbHypergraph();
+
+            hideSOptions();
+            pickSTOptions();
+
+            hideTembS();
+            hideTjuxtS();
+            if (isHypergraph) {
+                hideDictJuxt();
+                hideMatrixJuxt();
+
+                pickHypergraphJuxt();
+            } else if (isDict) {
+                hideMatrixJuxt();
+                hideHypergraphJuxt();
+
+                pickDictJuxt();
+            } else if (isMatrix) {
+                hideDictJuxt();
+                hideHypergraphJuxt();
+                pickMatrixJuxt();
+            }
+            if (isTembS && (isHypergraph || isDict || isMatrix)) {
+                pickTembS();
+                showVisualisation();
+            } else if (isTjuxtS && (isHypergraph || isDict || isMatrix)) {
+                pickTjuxtS();
+                showVisualisation();
+            } else if (isTencS && (isHypergraph || isDict || isMatrix)) {
+                if (isHypergraph) {
+                    pickHypergraphJuxtEnc();
+                } else if (isDict) {
+                    pickDictJuxtEnc();
+                } else if (isMatrix) {
+                    pickMatrixJuxtEnc();
+                } else {
+                    pickSpace();
+                    hideTjuxtS();
+                    hideTembS();
+                }
+                showVisualisation();
+            } else {
+                hideVisualisation();
+            }
+        } else {
+        }
+    } else {
+        hideSTEmbDict();
+        hideSTEmbMatrix();
+        hideSTEmbHypergraph();
+
+        if (!isR_left && !isST_right) {
+            hideDictJuxt();
+            hideMatrixJuxt();
+            hideHypergraphJuxt();
+            hideTembS();
+            hideTjuxtS();
+            hideAllEnc();
+        }
+    }
+
+}
+
+function showVisualisation() {
+    imageHolder.style.display = 'block';
+}
+function hideVisualisation() {
+    imageHolder.style.display = 'none'
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////// emb / juxt
 
@@ -371,6 +485,28 @@ function switchToJuxt() {
     isEmb = false;
     isJuxt = true;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////// ST-R
+
+function pickSTEmbHypergraph() {
+    stEmbGraph.style.display = 'block';
+}
+function hideSTEmbHypergraph() {
+    stEmbGraph.style.display = 'none';
+}
+function pickSTEmbDict() {
+    stEmbDict.style.display = 'block';
+}
+function hideSTEmbDict() {
+    stEmbDict.style.display = 'none';
+}
+function pickSTEmbMatrix() {
+    stEmbMatrix.style.display = 'block';
+}
+function hideSTEmbMatrix() {
+    stEmbMatrix.style.display = 'none';
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////// ST
 const stEmbOff= document.getElementById('stEmbOff');
@@ -412,7 +548,7 @@ stEncOff.addEventListener('click', () => {
     logStateAndCombination();
 });
 // ST options
-function showSTOptions() {
+function pickSTOptions() {
     stOptions.style.display = 'block';
 }
 function hideSTOptions() {
@@ -420,32 +556,31 @@ function hideSTOptions() {
 }
 // ST display
 //emb
-function showTembS() {
+function pickTembS() {
     // hide other T
     hideTjuxtS();
     hideAllEnc();
 
-    showSpace();
+    pickSpace();
     tEmbS.style.display = 'block';
 }
 function hideTembS() {
     tEmbS.style.display = 'none';
 }
 //juxt
-function showTjuxtS() {
+function pickTjuxtS() {
     // hide other T
     hideTembS();
     hideAllEnc();
 
-    showSpace();
+    pickSpace();
     tJuxtS.style.display = 'block';
 }
 function hideTjuxtS() {
-    showSpace();
     tJuxtS.style.display = 'none';
 }
 //enc juxt
-function showHypergraphJuxtEnc() {
+function pickHypergraphJuxtEnc() {
     //hide time
     hideTjuxtS();
     hideTembS();
@@ -462,13 +597,13 @@ function showHypergraphJuxtEnc() {
     hideDictEmbEnc();
     hideMatrixEmbEnc();
 
-    showSpace();
+    pickSpace();
     rJuxtGraphEnc.style.display = 'block';
 }
 function hideHypergraphJuxtEnc() {
     rJuxtGraphEnc.style.display = 'none';
 }
-function showDictJuxtEnc() {
+function pickDictJuxtEnc() {
     //hide time
     hideTjuxtS();
     hideTembS();
@@ -485,13 +620,13 @@ function showDictJuxtEnc() {
     hideDictEmbEnc();
     hideMatrixEmbEnc();
 
-    showSpace();
+    pickSpace();
     rJuxtDictEnc.style.display = 'block';
 }
 function hideDictJuxtEnc() {
     rJuxtDictEnc.style.display = 'none';
 }
-function showMatrixJuxtEnc() {
+function pickMatrixJuxtEnc() {
     //hide time
     hideTjuxtS();
     hideTembS();
@@ -508,14 +643,14 @@ function showMatrixJuxtEnc() {
     hideDictEmbEnc();
     hideMatrixEmbEnc();
 
-    showSpace();
+    pickSpace();
     rJuxtMatrixEnc.style.display = 'block';
 }
 function hideMatrixJuxtEnc() {
     rJuxtMatrixEnc.style.display = 'none';
 }
 // enc emb
-function showHypergraphEmbEnc() {
+function pickHypergraphEmbEnc() {
     // hide time
     hideTjuxtS();
     hideTembS();
@@ -532,13 +667,13 @@ function showHypergraphEmbEnc() {
     hideDictJuxtEnc();
     hideMatrixJuxtEnc();
 
-    showSpace();
+    pickSpace();
     rEmbGraphEnc.style.display = 'block';
 }
 function hideHypergraphEmbEnc() {
     rEmbGraphEnc.style.display = 'none';
 }
-function showDictEmbEnc() {
+function pickDictEmbEnc() {
     // hide time
     hideTjuxtS();
     hideTembS();
@@ -555,13 +690,13 @@ function showDictEmbEnc() {
     hideDictJuxtEnc();
     hideMatrixJuxtEnc();
 
-    showSpace();
+    pickSpace();
     rEmbDictEnc.style.display = 'block';
 }
 function hideDictEmbEnc() {
     rEmbDictEnc.style.display = 'none';
 }
-function showMatrixEmbEnc() {
+function pickMatrixEmbEnc() {
     // hide time
     hideTjuxtS();
     hideTembS();
@@ -578,7 +713,7 @@ function showMatrixEmbEnc() {
     hideDictJuxtEnc();
     hideMatrixJuxtEnc();
 
-    showSpace();
+    pickSpace();
     rEmbMatrixEnc.style.display = 'block';
 }
 function hideMatrixEmbEnc() {
@@ -628,7 +763,7 @@ matrixOff.addEventListener('click', () => {
     logStateAndCombination();
 });
 // R options
-function showROptions() {
+function pickROptions() {
     rOptions.style.display = 'block';
     rtOptions.style.display = 'none';
 }
@@ -638,16 +773,16 @@ function hideROptions() {
 }
 // R display
 //Hypergraph
-function showHypergraphJuxt() {
-    showSpace();
+function pickHypergraphJuxt() {
+    pickSpace();
     rJuxtGraph.style.display = 'block';
     hideHypergraphEmb();
 }
 function hideHypergraphJuxt() {
     rJuxtGraph.style.display = 'none';
 }
-function showHypergraphEmb() {
-    showSpace();
+function pickHypergraphEmb() {
+    pickSpace();
     rEmbGraph.style.display = 'block';
     hideHypergraphJuxt();
 }
@@ -655,16 +790,16 @@ function hideHypergraphEmb() {
     rEmbGraph.style.display = 'none';
 }
 //Dict
-function showDictJuxt() {
-    showSpace();
+function pickDictJuxt() {
+    pickSpace();
     rJuxtDict.style.display = 'block';
     hideDictEmb();
 }
 function hideDictJuxt() {
     rJuxtDict.style.display = 'none';
 }
-function showDictEmb() {
-    showSpace();
+function pickDictEmb() {
+    pickSpace();
     rEmbDict.style.display = 'block';
     hideDictJuxt();
 }
@@ -672,16 +807,16 @@ function hideDictEmb() {
     rEmbDict.style.display = 'none';
 }
 //Matrix
-function showMatrixJuxt() {
-    showSpace();
+function pickMatrixJuxt() {
+    pickSpace();
     rJuxtMatrix.style.display = 'block';
     hideMatrixEmb();
 }
 function hideMatrixJuxt() {
     rJuxtMatrix.style.display = 'none';
 }
-function showMatrixEmb() {
-    showSpace();
+function pickMatrixEmb() {
+    pickSpace();
     rEmbMatrix.style.display = 'block';
     hideMatrixJuxt();
 }
@@ -689,20 +824,20 @@ function hideMatrixEmb() {
     rEmbMatrix.style.display = 'none';
 }
 //R emb TencS
-function showHypergraphEnc() {
-    console.log('showHypergraphEnc')
+function pickHypergraphEnc() {
+    console.log('pickHypergraphEnc')
 }
 function hideHypergraphEnc() {
     console.log('hideHypergraphEnc')
 }
-function showDictEnc() {
-    console.log('showDictEnc')
+function pickDictEnc() {
+    console.log('pickDictEnc')
 }
 function hideDictEnc() {
     console.log('hideDictEnc')
 }
-function showMatrixEnc() {
-    console.log('showMatrixEnc')
+function pickMatrixEnc() {
+    console.log('pickMatrixEnc')
 }
 function hideMatrixEnc() {
     console.log('hideMatrixEnc')
@@ -721,7 +856,7 @@ timelinesIconOff.addEventListener('click', () => {
 })
 
 //RT options
-function showRTOptions() {
+function pickRTOptions() {
     rtOptions.style.display = 'block';
     rOptions.style.display = 'none';
 }
@@ -744,16 +879,16 @@ function switchTimelinesOptions() {
 }
 // RT display
 //Storylines juxt
-function showStorylinesJuxt() {
-    showSpace();
+function pickStorylinesJuxt() {
+    pickSpace();
     rtJuxtStory.style.display = 'block';
     rtEmbStory.style.display = 'none';
 }
 function hideStorylinesJuxt() {
     rtJuxtStory.style.display = 'none';
 }
-function showTimelinesJuxt() {
-    showSpace();
+function pickTimelinesJuxt() {
+    pickSpace();
     rtJuxtTime.style.display = 'block';
     rtEmbTime.style.display = 'none';
 }
@@ -761,16 +896,16 @@ function hideTimelinesJuxt() {
     rtJuxtTime.style.display = 'none';
 }
 //Storylines emb
-function showStorylinesEmb() {
-    showSpace();
+function pickStorylinesEmb() {
+    pickSpace();
     rtEmbStory.style.display = 'block';
     rtJuxtStory.style.display = 'none';
 }
 function hideStorylinesEmb() {
     rtEmbStory.style.display = 'none';
 }
-function showTimelinesEmb() {
-    showSpace();
+function pickTimelinesEmb() {
+    pickSpace();
     rtEmbTime.style.display = 'block';
     rtJuxtTime.style.display = 'none';
 }
@@ -778,15 +913,18 @@ function hideTimelinesEmb() {
     rtEmbTime.style.display = 'none';
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////// S
-function showSOptions() {
+function pickSOptions() {
     sOptions.style.display = 'block';
-    space.style.display = 'block';
 }
 function hideSOptions() {
     sOptions.style.display = 'none';
-    space.style.display = 'none';
 }
 // S display
-function showSpace() {
+function pickSpace() {
     space.style.display = 'block';
+    noSpace.style.display = 'none';
+}
+function hideSpace() {
+    space.style.display = 'none';
+    noSpace.style.display = 'block';
 }
