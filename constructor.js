@@ -35,6 +35,7 @@ const stEmbMatrix = document.getElementById('st-emb-matrix');
 const srEmbT = document.getElementById('sr-emb-t');
 const srJuxtT = document.getElementById('sr-juxt-t');
 const sEmbRT = document.getElementById('s-emb-rt');
+const sEmbTimeline = document.getElementById('s-emb-rt-timeline');
 
 imageHolder.style.display = 'none'
 
@@ -480,21 +481,32 @@ function logStateAndCombination() {
     //S-RT
     if (isS_left && isRT_right) {
         pickRTOptions();
-        showVisualisation();
         if (isEmb) {
-            pickSEmbRT();
+            if (isStorylines) {
+                pickSEmbRT();
+                hideSEmbTimeline();
+                showVisualisation();
+            } else if (isTimelines) {
+                pickSEmbTimeline();
+                hideSEmbRT();
+                showVisualisation();
+            }
         } else if (isJuxt) {
             hideSEmbRT();
+            hideSEmbTimeline();
             if (isStorylines) {
                 hideTimelinesJuxt();
                 pickStorylinesJuxt();
+                showVisualisation();
             }
             if (isTimelines) {
                 hideStorylinesJuxt();
                 pickTimelinesJuxt();
+                showVisualisation();
             }
         }
     } else {
+        hideSEmbTimeline();
         hideSEmbRT();
         if (!(isRT_left && isS_right)) {
             hideStorylinesJuxt();
@@ -550,6 +562,12 @@ function pickSEmbRT() {
 }
 function hideSEmbRT() {
     sEmbRT.style.display = 'none';
+}
+function pickSEmbTimeline() {
+    sEmbTimeline.style.display = 'block';
+}
+function hideSEmbTimeline() {
+    sEmbTimeline.style.display = 'none';
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////// SR-T
