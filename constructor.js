@@ -1,3 +1,7 @@
+// Space located all the visualisation in the center
+// when there is no space, the visualisation appear on the side
+// we must always display space or noSpace
+//////////////////////////////////////////
 const draggables = [...document.querySelectorAll('.draggable')];
 const holders = [...document.querySelectorAll('.dropholder')];
 const stOptions = document.getElementById('stOptions');
@@ -28,6 +32,9 @@ const tJuxtS = document.getElementById('t-juxt-s');
 const stEmbGraph = document.getElementById('st-emb-graph');
 const stEmbDict = document.getElementById('st-emb-dict');
 const stEmbMatrix = document.getElementById('st-emb-matrix');
+const srEmbT = document.getElementById('sr-emb-t');
+const srJuxtT = document.getElementById('sr-juxt-t');
+const sEmbRT = document.getElementById('s-emb-rt');
 
 imageHolder.style.display = 'none'
 
@@ -183,11 +190,15 @@ function logStateAndCombination() {
     let isST_right = (holderState['dimensionsHolder3'] === 's' && holderState['dimensionsHolder4'] === 't') || (holderState['dimensionsHolder3'] === 't' && holderState['dimensionsHolder4'] === 's');
     let isST_left = (holderState['dimensionsHolder1'] === 's' && holderState['dimensionsHolder2'] === 't') || (holderState['dimensionsHolder1'] === 't' && holderState['dimensionsHolder2'] === 's');
     let isST = (isST_right || isST_left);
+    let isSR_left = (holderState['dimensionsHolder1'] === 's' && holderState['dimensionsHolder2'] === 'r') || (holderState['dimensionsHolder1'] === 'r' && holderState['dimensionsHolder2'] === 's');
     let isSR_right = (holderState['dimensionsHolder3'] === 's' && holderState['dimensionsHolder4'] === 'r') || (holderState['dimensionsHolder3'] === 'r' && holderState['dimensionsHolder4'] === 's');
     let isT_only = (holderState['dimensionsHolder1'] === 't' && holderState['dimensionsHolder2'] === null) || (holderState['dimensionsHolder2'] === 't' && holderState['dimensionsHolder1'] === null);
+    let isT_right = (holderState['dimensionsHolder3'] === 't' && holderState['dimensionsHolder4'] === null) || (holderState['dimensionsHolder3'] === 't' && holderState['dimensionsHolder4'] === null);
     let isRT_left = (holderState['dimensionsHolder1'] === 'r' && holderState['dimensionsHolder2'] === 't') || (holderState['dimensionsHolder1'] === 't' && holderState['dimensionsHolder2'] === 'r');
+    let isRT_right = (holderState['dimensionsHolder3'] === 'r' && holderState['dimensionsHolder4'] === 't') || (holderState['dimensionsHolder3'] === 't' && holderState['dimensionsHolder4'] === 'r');
     let isS_only = (holderState['dimensionsHolder3'] === 's' && holderState['dimensionsHolder4'] === null) || (holderState['dimensionsHolder4'] === 's' && holderState['dimensionsHolder3'] === null);
     let isS_left = (holderState['dimensionsHolder1'] === 's' || holderState['dimensionsHolder2'] === 's');
+    let isS_right = (holderState['dimensionsHolder3'] === 's' || holderState['dimensionsHolder4'] === 's');
     let isS = Object.values(holderState).includes('s');
     let isT = Object.values(holderState).includes('t');
     let isR = Object.values(holderState).includes('r') && !isRT_left;
@@ -197,12 +208,16 @@ function logStateAndCombination() {
     if (isST_right) pickSTOptions(); else hideSTOptions();
     if (isRT_left) pickRTOptions(); else hideRTOptions();
     if (isR) pickROptions(); else hideROptions();
-    if (isS && !isST_right) pickSOptions(); else hideSOptions();
-    if (isS_left) console.log('S on the left')
-    if (isST_left) hideSpace();
+    if (isS && !isST) pickSOptions(); else hideSOptions();
+    // if (isST_left) hideSpace();
+    if (isS_right) {
+        pickSpace();
+    } else if (isS_left) {
+        hideSpace();
+    }
 
     // RT-S
-    if (isRT_left && isS_only) {
+    if (isRT_left && isS_right) {
         if (isStorylines) {
             hideTimelinesJuxt();
             hideTimelinesEmb();
@@ -295,7 +310,7 @@ function logStateAndCombination() {
         hideAllEnc();
     }
 
-    // is T-S
+    // T-S
     if (isT_only && isS_only) {
         pickSTOptions();
         hideSOptions();
@@ -315,6 +330,7 @@ function logStateAndCombination() {
         }
     }
 
+    // T-SR
     if (isT_only && isSR_right) {
         showVisualisation();
         pickROptions();
@@ -356,6 +372,7 @@ function logStateAndCombination() {
         }
     }
 
+    // ST-R
     if (isST_left && isR_right) {
         pickROptions();
         if (isEmb) {
@@ -427,13 +444,11 @@ function logStateAndCombination() {
             } else {
                 hideVisualisation();
             }
-        } else {
         }
     } else {
         hideSTEmbDict();
         hideSTEmbMatrix();
         hideSTEmbHypergraph();
-
         if (!isR_left && !isST_right) {
             hideDictJuxt();
             hideMatrixJuxt();
@@ -444,6 +459,48 @@ function logStateAndCombination() {
         }
     }
 
+    // SR-T
+    if (isSR_left && isT_right) {
+        hideSpace();
+        hideROptions();
+        hideSOptions();
+        showVisualisation();
+        if (isEmb) {
+            hideSRJuxtT();
+            pickSREmbT();
+        } else if (isJuxt) {
+            hideSREmbT();
+            pickSRJuxtT();
+        }
+    } else {
+        hideSRJuxtT();
+        hideSREmbT();
+    }
+
+    //S-RT
+    if (isS_left && isRT_right) {
+        pickRTOptions();
+        showVisualisation();
+        if (isEmb) {
+            pickSEmbRT();
+        } else if (isJuxt) {
+            hideSEmbRT();
+            if (isStorylines) {
+                hideTimelinesJuxt();
+                pickStorylinesJuxt();
+            }
+            if (isTimelines) {
+                hideStorylinesJuxt();
+                pickTimelinesJuxt();
+            }
+        }
+    } else {
+        hideSEmbRT();
+        if (!(isRT_left && isS_right)) {
+            hideStorylinesJuxt();
+            hideTimelinesJuxt();
+        }
+    }
 }
 
 function showVisualisation() {
@@ -485,6 +542,31 @@ function switchToJuxt() {
     isEmb = false;
     isJuxt = true;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////// S-RT
+
+function pickSEmbRT() {
+    sEmbRT.style.display = 'block';
+}
+function hideSEmbRT() {
+    sEmbRT.style.display = 'none';
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////// SR-T
+
+function pickSREmbT() {
+    srEmbT.style.display = 'block';
+}
+function hideSREmbT() {
+    srEmbT.style.display = 'none';
+}
+function pickSRJuxtT() {
+    srJuxtT.style.display = 'block';
+}
+function hideSRJuxtT() {
+    srJuxtT.style.display = 'none';
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////// ST-R
 
