@@ -33,7 +33,11 @@ const stEmbGraph = document.getElementById('st-emb-graph');
 const stEmbDict = document.getElementById('st-emb-dict');
 const stEmbMatrix = document.getElementById('st-emb-matrix');
 const srEmbT = document.getElementById('sr-emb-t');
+const srDictEmbT = document.getElementById('srDict-emb-t');
+const srMatrixEmbT = document.getElementById('srMatrix-emb-t');
 const srJuxtT = document.getElementById('sr-juxt-t');
+const srDictJuxtT = document.getElementById('srDict-juxt-t');
+const srMatrixJuxtT = document.getElementById('srMatrix-juxt-t');
 const sEmbRT = document.getElementById('s-emb-rt');
 const sEmbTimeline = document.getElementById('s-emb-rt-timeline');
 
@@ -463,18 +467,63 @@ function logStateAndCombination() {
     // SR-T
     if (isSR_left && isT_right) {
         hideSpace();
-        hideROptions();
         hideSOptions();
-        showVisualisation();
         if (isEmb) {
+            hideSRMatrixJuxtT();
+            hideSRDictJuxtT();
             hideSRJuxtT();
-            pickSREmbT();
+
+            if (isHypergraph) {
+                hideSRMatrixEmbT();
+                hideSRDictEmbT();
+
+                pickSREmbT();
+                showVisualisation();
+            } else if (isDict) {
+                hideSRMatrixEmbT();
+                hideSREmbT();
+
+                pickSRDictEmbT();
+                showVisualisation();
+            } else if (isMatrix) {
+                hideSRDictEmbT();
+                hideSREmbT();
+
+                pickSRMatrixEmbT();
+                showVisualisation();
+            }
         } else if (isJuxt) {
+            hideSRMatrixEmbT();
+            hideSRDictEmbT();
             hideSREmbT();
-            pickSRJuxtT();
+
+            if (isHypergraph) {
+                hideSRMatrixJuxtT();
+                hideSRDictJuxtT();
+
+                pickSRJuxtT();
+                showVisualisation();
+            } else if (isDict) {
+                hideSRMatrixJuxtT();
+                hideSRJuxtT();
+
+                pickSRDictJuxtT();
+                showVisualisation();
+            } else if (isMatrix) {
+                hideSRDictJuxtT();
+                hideSRJuxtT();
+
+                pickSRMatrixJuxtT();
+                showVisualisation();
+            }
         }
     } else {
+        hideSRMatrixJuxtT();
+        hideSRDictJuxtT();
         hideSRJuxtT();
+
+        hideSRMatrixEmbT();
+        hideSRDictEmbT();
         hideSREmbT();
     }
 
@@ -578,11 +627,35 @@ function pickSREmbT() {
 function hideSREmbT() {
     srEmbT.style.display = 'none';
 }
+function pickSRDictEmbT() {
+    srDictEmbT.style.display = 'block';
+}
+function hideSRDictEmbT() {
+    srDictEmbT.style.display = 'none';
+}
+function pickSRMatrixEmbT() {
+    srMatrixEmbT.style.display = 'block';
+}
+function hideSRMatrixEmbT() {
+    srMatrixEmbT.style.display = 'none';
+}
 function pickSRJuxtT() {
     srJuxtT.style.display = 'block';
 }
 function hideSRJuxtT() {
     srJuxtT.style.display = 'none';
+}
+function pickSRDictJuxtT() {
+    srDictJuxtT.style.display = 'block';
+}
+function hideSRDictJuxtT() {
+    srDictJuxtT.style.display = 'none';
+}
+function pickSRMatrixJuxtT() {
+    srMatrixJuxtT.style.display = 'block';
+}
+function hideSRMatrixJuxtT() {
+    srMatrixJuxtT.style.display = 'none';
 }
 
 
