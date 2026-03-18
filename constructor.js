@@ -193,7 +193,8 @@ function logStateAndCombination() {
     let isSR_left = (holderState['dimensionsHolder1'] === 's' && holderState['dimensionsHolder2'] === 'r') || (holderState['dimensionsHolder1'] === 'r' && holderState['dimensionsHolder2'] === 's');
     let isSR_right = (holderState['dimensionsHolder3'] === 's' && holderState['dimensionsHolder4'] === 'r') || (holderState['dimensionsHolder3'] === 'r' && holderState['dimensionsHolder4'] === 's');
     let isT_only = (holderState['dimensionsHolder1'] === 't' && holderState['dimensionsHolder2'] === null) || (holderState['dimensionsHolder2'] === 't' && holderState['dimensionsHolder1'] === null);
-    let isT_right = (holderState['dimensionsHolder3'] === 't' && holderState['dimensionsHolder4'] === null) || (holderState['dimensionsHolder3'] === 't' && holderState['dimensionsHolder4'] === null);
+    let isT_right = (holderState['dimensionsHolder3'] === 't' && holderState['dimensionsHolder4'] === null) || (holderState['dimensionsHolder4'] === 't' && holderState['dimensionsHolder3'] === null);
+    let isT_left = (holderState['dimensionsHolder1'] === 't' && holderState['dimensionsHolder2'] === null) || (holderState['dimensionsHolder2'] === 't' && holderState['dimensionsHolder1'] === null);
     let isRT_left = (holderState['dimensionsHolder1'] === 'r' && holderState['dimensionsHolder2'] === 't') || (holderState['dimensionsHolder1'] === 't' && holderState['dimensionsHolder2'] === 'r');
     let isRT_right = (holderState['dimensionsHolder3'] === 'r' && holderState['dimensionsHolder4'] === 't') || (holderState['dimensionsHolder3'] === 't' && holderState['dimensionsHolder4'] === 'r');
     let isS_only = (holderState['dimensionsHolder3'] === 's' && holderState['dimensionsHolder4'] === null) || (holderState['dimensionsHolder4'] === 's' && holderState['dimensionsHolder3'] === null);
@@ -305,8 +306,8 @@ function logStateAndCombination() {
         hideMatrixEmb();
         hideHypergraphJuxt();
         hideHypergraphEmb();
-        hideTembS();
-        hideTjuxtS();
+        // hideTembS();
+        // hideTjuxtS();
         hideAllEnc();
     }
 
@@ -337,37 +338,34 @@ function logStateAndCombination() {
         if (isHypergraph) {
             hideDictEmb();
             hideMatrixEmb();
+            pickHypergraphEmb();
 
-            if (isJuxt) {
-                pickHypergraphEmb();
+            if (isEmb) {
+                pickTembS();
+            } else if (isJuxt) {
                 pickTjuxtS();
             }
-            if (isEmb) {
-                pickHypergraphEmb();
-                pickTembS();
-            }
+
         } else if (isDict) {
             hideMatrixEmb();
             hideHypergraphEmb();
+            pickDictEmb();
 
-            if (isJuxt) {
-                pickDictEmb();
+            if (isEmb) {
+                pickTembS();
+            } else if (isJuxt) {
                 pickTjuxtS();
             }
-            if (isEmb) {
-                pickDictEmb();
-                pickTembS();
-            }
+
         } else if (isMatrix) {
             hideDictEmb();
             hideHypergraphEmb();
-            if (isJuxt) {
-                pickMatrixEmb();
-                pickTjuxtS();
-            }
+            pickMatrixEmb();
+
             if (isEmb) {
-                pickMatrixEmb();
                 pickTembS();
+            } else if (isJuxt) {
+                pickTjuxtS();
             }
         }
     }
@@ -453,9 +451,11 @@ function logStateAndCombination() {
             hideDictJuxt();
             hideMatrixJuxt();
             hideHypergraphJuxt();
-            hideTembS();
-            hideTjuxtS();
-            hideAllEnc();
+            if (!isT_left) {
+                hideTembS();
+                hideTjuxtS();
+                hideAllEnc();
+            }
         }
     }
 
@@ -648,6 +648,7 @@ function pickTembS() {
 }
 function hideTembS() {
     tEmbS.style.display = 'none';
+    console.log('hide T emb S')
 }
 //juxt
 function pickTjuxtS() {
