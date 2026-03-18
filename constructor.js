@@ -60,6 +60,8 @@ let isTembS = false;
 let isTjuxtS = false;
 let isTencS = false;
 
+let isSpace = false;
+
 
 const startPos = {};
 
@@ -220,6 +222,11 @@ function logStateAndCombination() {
         pickSpace();
     } else if (isS_left) {
         hideSpace();
+    }
+    if (isSpace || (isST_left && isJuxt) || (isRT_right && isJuxt)) {
+        document.getElementById('highlight').style.display = 'block';
+    } else {
+        document.getElementById('highlight').style.display = 'none';
     }
 
     // RT-S
@@ -1097,8 +1104,10 @@ function hideSOptions() {
 function pickSpace() {
     space.style.display = 'block';
     noSpace.style.display = 'none';
+    isSpace = true;
 }
 function hideSpace() {
     space.style.display = 'none';
     noSpace.style.display = 'block';
+    isSpace = false;
 }
