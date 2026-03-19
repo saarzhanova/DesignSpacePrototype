@@ -384,6 +384,12 @@ function logStateAndCombination() {
     if (isST_left && isR_right) {
         pickROptions();
         if (isEmb) {
+            hideDictJuxt();
+            hideMatrixJuxt();
+            hideHypergraphJuxt();
+            hideTjuxtS();
+            hideTembS();
+
             if (isHypergraph) {
                 hideSTEmbDict();
                 hideSTEmbMatrix();
