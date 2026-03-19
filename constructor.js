@@ -2,6 +2,7 @@
 // when there is no space, the visualisation appear on the side
 // we must always display space or noSpace
 //////////////////////////////////////////
+const reload = document.getElementById('reload')
 const draggables = [...document.querySelectorAll('.draggable')];
 const holders = [...document.querySelectorAll('.dropholder')];
 const stOptions = document.getElementById('stOptions');
@@ -40,6 +41,8 @@ const srDictJuxtT = document.getElementById('srDict-juxt-t');
 const srMatrixJuxtT = document.getElementById('srMatrix-juxt-t');
 const sEmbRT = document.getElementById('s-emb-rt');
 const sEmbTimeline = document.getElementById('s-emb-rt-timeline');
+
+
 
 imageHolder.style.display = 'none'
 
@@ -1106,3 +1109,7 @@ function hideSpace() {
     noSpace.style.display = 'block';
     isSpace = false;
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////// S
+reload.addEventListener('click', () => {
+    location.reload();
+});
