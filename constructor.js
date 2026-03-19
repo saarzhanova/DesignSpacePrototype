@@ -223,11 +223,6 @@ function logStateAndCombination() {
     } else if (isS_left) {
         hideSpace();
     }
-    if (isSpace || (isST_left && isJuxt) || (isRT_right && isJuxt)) {
-        document.getElementById('highlight').style.display = 'block';
-    } else {
-        document.getElementById('highlight').style.display = 'none';
-    }
 
     // RT-S
     if (isRT_left && isS_right) {

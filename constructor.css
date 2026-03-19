@@ -197,6 +197,3 @@
     outline: 2px dashed #000;
     outline-offset: 4px;
 }
-#highlight {
-    z-index: 11;
-}
